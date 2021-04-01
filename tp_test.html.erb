@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+    <h1></h1>
+
+    <% require 'pg' %>
+    <% connection = PG::connect(dbname: "goya") %>
+    <% connection.internal_encoding = "UTF-8" %>
+    <form action="tp_indicate.cgi" method="POST">
+
+      <input type="submit" name="Send" >
+    </form>
+    <% result = connection.exec("select weight, give_for, quality from crops where quality =false") %>
+    <% data = [] %>
+    <% result.each do |record| %>
+    <%  data << "The size of bitter gourd：#{record["weight"]}　Who sold：#{record["give_for"]} la qualite est #{record["quality"]}" %>
+    <% end %>
+    <form action="tp_goya.cgi" method="POST">
+       Press the button below to jump to the information page of the size of bitter gourd and the person who sold it.<br><br>
+      Apputer pour avoir  to jump to the information page of the size of bitter gourd and the person who sold it.<br><br>
+       <!-- Substitute the data you want to send for value -->
+       <!-- Use name = "goya" as a marker for information -->
+      <input type="text" name="goya" value="<%= data.join(' ') %>">
+      <input type="submit" name="Send" >
+
+
+    </form>
+
+    <% result = connection.exec("select date, weight, give_for from crops where give_for  = '自家消費' ") %>
+    <% data1 = [] %>
+    <% result.each do |record| %>
+    <%  data1 << "The size of bitter gourd：#{record["weight"]}　Who sold：#{record["give_for"]} la qualite est #{record["quality"]}" %>
+    <% end %>
+    <form action="tp1_goya.cgi" method="POST">
+      Information auto consumption.<br><br>
+      press to get the information page about sel consumption it.<br><br>
+       <!-- Substitute the data you want to send for value -->
+       <!-- Use name = "goya" as a marker for information -->
+      <input type="text" name="goya" value="<%= data1.join(' ') %>">
+      <input type="submit" name="Send" >
+
+    </form>
+
+
+
+
+
+  </body>
+</html>
